@@ -9,7 +9,7 @@ printUsage() {
 	echo -e "\t-h\tPrint this usage information."
 	echo -e "\t-f file\tAccept input from <file>."
 	echo -e "\t-I\tAccept input from STDIN."
-	echo -e "\project\tQuote-delimited project name, used in any new object names."
+	echo -e "\tproject\tQuote-delimited project name, used in any new object names."
 	echo ""
 	echo "Example:"
 	echo "$0 -f newObjects.txt \"My New Objects\""
