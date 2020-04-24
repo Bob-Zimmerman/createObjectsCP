@@ -150,14 +150,17 @@ for item in "${dedupedObjectList[@]}"; do
 
 for item in "${rawServiceList[@]}"; do
 	if $(echo "${item}" | egrep "^TCP" >/dev/null); then
-		debug2 "$item looks like a TCP service."
-		tcpServiceList+=("$item")
+		port="$(echo "${item}" | cut -d' ' -f2)"
+		debug2 "$item looks like a TCP service covering port(s) ${port}."
+		tcpServiceList+=("${port}")
 	elif $(echo "${item}" | egrep "^UDP" >/dev/null); then
-		debug2 "$item looks like a UDP service."
-		udpServiceList+=("$item")
+		port="$(echo "${item}" | cut -d' ' -f2)"
+		debug2 "$item looks like a UDP service covering port(s) ${port}."
+		udpServiceList+=("${port}")
 	elif $(echo "${item}" | egrep "^IP" >/dev/null); then
-		debug2 "$item looks like an IP protocol."
-		ipServiceList+=("$item")
+		protocol="$(echo "${item}" | cut -d' ' -f2)"
+		debug2 "$item looks like a service covering IP protocol ${protocol}."
+		ipServiceList+=("${protocol}")
 	else
 		echo "ERROR: Unhandled service: $item" >&2
 		fi
