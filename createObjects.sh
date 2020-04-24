@@ -124,29 +124,38 @@ debug2 "Deduplicated object list: ${dedupedObjectList[*]}"
 
 for item in "${dedupedObjectList[@]}"; do
 	if $(echo "${item}" | egrep ",[a-zA-Z]" > /dev/null); then
+		debug2 "$item looks like a service group."
 		serviceGroupList+=("$item")
 	elif $(echo "${item}" | egrep "^[a-zA-Z]" > /dev/null); then
-		echo "$item looks like a service."
+		debug2 "$item looks like a service."
 		rawServiceList+=("$item")
 	elif $(echo "${item}" | grep "," > /dev/null); then
+		debug2 "$item looks like a network group."
 		networkGroupList+=("$item")
 	elif $(echo "${item}" | egrep "^\." > /dev/null); then
+		debug2 "$item looks like a fully-qualified domain name."
 		fqdnList+=("$item")
 	elif $(echo "${item}" | grep "-" > /dev/null); then
+		debug2 "$item looks like an address range."
 		addressRangeList+=("$item")
 	elif $(echo "${item}" | grep "/" > /dev/null); then
+		debug2 "$item looks like a network."
 		networkList+=("$item")
 	else
+		debug2 "$item looks like a host."
 		hostList+=("$item")
 		fi
 	done
 
 for item in "${rawServiceList[@]}"; do
 	if $(echo "${item}" | egrep "^TCP" >/dev/null); then
+		debug2 "$item looks like a TCP service."
 		tcpServiceList+=("$item")
 	elif $(echo "${item}" | egrep "^UDP" >/dev/null); then
+		debug2 "$item looks like a UDP service."
 		udpServiceList+=("$item")
 	elif $(echo "${item}" | egrep "^IP" >/dev/null); then
+		debug2 "$item looks like an IP protocol."
 		ipServiceList+=("$item")
 	else
 		echo "ERROR: Unhandled service: $item" >&2
