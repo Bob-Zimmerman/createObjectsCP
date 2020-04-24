@@ -40,6 +40,98 @@ debug2() {
 		fi
 	}
 
+########################################################################
+## Object build functions. These accept an object's contents, test to
+## see if a usable object already exists, and if not, creates one.
+########################################################################
+
+buildFQDN() {
+	debug2 "Entering buildFQDN for $1"
+	echo "WARNING: Building FQDN objects is not yet implemented." >&2
+	}
+
+buildAddressRange() {
+	debug2 "Entering buildAddressRange for $1"
+	echo "WARNING: Building address range objects is not yet implemented." >&2
+	}
+
+buildNetwork() {
+	debug2 "Entering buildNetwork for $1"
+	echo "WARNING: Building network objects is not yet implemented." >&2
+	}
+
+buildHost() {
+	debug2 "Entering buildHost for $1"
+	echo "WARNING: Building host objects is not yet implemented." >&2
+	}
+
+buildNetworkGroup() {
+	debug2 "Entering buildNetworkGroup for contents $1"
+	echo "WARNING: Building network groups is not yet implemented." >&2
+	}
+
+buildTCPService() {
+	debug2 "Entering buildTCPService for port(s) $1"
+	echo "WARNING: Building TCP service objects is not yet implemented." >&2
+	}
+
+buildUDPService() {
+	debug2 "Entering buildUDPService for port(s) $1"
+	echo "WARNING: Building UDP service objects is not yet implemented." >&2
+	}
+
+buildIPService() {
+	debug2 "Entering buildIPService for protocol $1"
+	echo "WARNING: Building IP protocol objects is not yet implemented." >&2
+	}
+
+buildServiceGroup() {
+	debug2 "Entering buildServiceGroup for contents $1"
+	echo "WARNING: Building service groups is not yet implemented." >&2
+	}
+
+########################################################################
+## Object creation engine. This iterates through all of the lists of
+## objects, and calls the appropriate object build functions for each
+## member of each list.
+########################################################################
+
+createObjects() {
+	debug1 "Entering createObjects."
+	for fqdnContent in "${fqdnList}"; do
+		buildFQDN "${fqdnContents}"
+		done
+	for addressRangeContent in "${fqdnList}"; do
+		buildAddressRange "${addressRangeContent}"
+		done
+	for networkContent in "${fqdnList}"; do
+		buildNetwork "${networkContent}"
+		done
+	for hostContent in "${hostList[@]}"; do
+		buildHost "${hostContent}"
+		done
+	for networkGroupContent in "${networkGroupList[@]}"; do
+		buildNetworkGroup "${networkGroupContent}"
+		done
+	for tcpServiceContent in "${tcpServiceList[@]}"; do
+		buildTCPService "${tcpServiceContent}"
+		done
+	for udpServiceContent in "${udpServiceList[@]}"; do
+		buildUDPService "${udpServiceContent}"
+		done
+	for ipServiceContent in "${ipServiceList[@]}"; do
+		buildIPService "${ipServiceContent}"
+		done
+	for serviceGroupContent in "${serviceGroupList[@]}"; do
+		buildServiceGroup "${serviceGroupContent}"
+		done
+	}
+
+########################################################################
+## Management build functions. These should handle all the setup and
+## teardown.
+########################################################################
+
 buildGlobalObjects() {
 	debug1 "Entering buildGlobalObjects."
 	echo "ERROR: Building global objects is not yet implemented." >&2
