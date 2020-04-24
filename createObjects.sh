@@ -40,6 +40,26 @@ debug2() {
 		fi
 	}
 
+buildGlobalObjects() {
+	echo "ERROR: Building global objects is not yet implemented." >&2
+	exit 2
+	}
+
+buildOnAllCMAs() {
+	echo "ERROR: Building objects on all CMAs is not yet implemented." >&2
+	exit 2
+	}
+
+buildOnCMA() {
+	echo "ERROR: Building objects on a CMA is not yet implemented." >&2
+	exit 2
+	}
+
+buildOnSmartCenter() {
+	echo "ERROR: Building objects on a SmartCenter is not yet implemented." >&2
+	exit 2
+	}
+
 
 
 if [ $# -eq 0 ]; then
@@ -197,7 +217,6 @@ for item in "${rawServiceList[@]}"; do
 	done
 unset rawServiceList
 
-
 # We now have a set of lists per object type we will create. Having the
 # lists separated will let us build the group members before the
 # groups. Next, we will connect to the managements and iterate through
@@ -208,3 +227,16 @@ unset rawServiceList
 # Building groups will be more complicated. Right now, I think the best
 # bet is to break the group up into its constituent members, make a new
 # list of their UUIDs, then build the group with that list.
+
+if [ "${mdsOptCount}" -eq 0 ]; then
+	buildOnSmartCenter
+elif [[ "${mdsBuildGlobal}" == true ]]; then
+	buildGlobalObjects
+elif [[ "${mdsBuildOnAllCMAs}" == true ]]; then
+	buildOnAllCMAs
+elif [ "${mdsBuildOnCMA}" != "" ]; then
+	buildOnCMA "${mdsBuildOnCMA}"
+else
+	echo "ERROR: Something went wrong determining where to build the objects." >&2
+	exit 1
+	fi
