@@ -48,8 +48,13 @@ buildGlobalObjects() {
 
 buildOnAllCMAs() {
 	debug1 "Entering buildOnAllCMAs."
-	echo "ERROR: Building objects on all CMAs is not yet implemented." >&2
-	exit 2
+	mgmt_cli login read-only true -r true > sessionFile.txt
+	MDSDomains=( $(mgmt_cli -s sessionFile.txt --format json show domains | jq -c ".objects[].name" | sed 's/"//g') )
+	mgmt_cli -s sessionFile.txt logout>/dev/null
+	/bin/rm sessionFile.txt
+	for CMA in "${MDSDomains[@]}"; do
+		buildOnCMA "${CMA}"
+		done
 	}
 
 buildOnCMA() {
