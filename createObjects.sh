@@ -62,6 +62,10 @@ buildOnSmartCenter() {
 
 
 
+########################################################################
+## Execution begins here.
+########################################################################
+
 if [ $# -eq 0 ]; then
 	printUsage
 	exit 1
@@ -151,6 +155,11 @@ if [ "${mdsBuildOnCMA}" != "" ]; then
 	debug1 "We will be operating on the CMA named \"${mdsBuildOnCMA}\""
 	fi
 
+########################################################################
+## Done reading and validating command line options. Next, we read the
+## data, either from STDIN or from the specified file.
+########################################################################
+
 if [ $readFromSTDIN ]; then
 	debug1 "Reading from STDIN."
 	while read LINE; do
@@ -166,6 +175,11 @@ if [ "${inputFile}" != "" ]; then
 		rawObjectList+=("$LINE")
 		done < "${inputFile}"
 	fi
+
+########################################################################
+## Now that we have the raw data, time to split it up into the different
+## types of objects we will handle later.
+########################################################################
 
 IFS=$'\n' dedupedObjectList=($(sort <<< "${rawObjectList[*]}" | uniq)); unset IFS
 unset rawObjectList
@@ -217,16 +231,18 @@ for item in "${rawServiceList[@]}"; do
 	done
 unset rawServiceList
 
-# We now have a set of lists per object type we will create. Having the
-# lists separated will let us build the group members before the
-# groups. Next, we will connect to the managements and iterate through
-# the objects. For each one, we will see if the object already exists.
-# If it does, we ignore it and move on to the next. If it doesn't, we
-# build it.
-# 
-# Building groups will be more complicated. Right now, I think the best
-# bet is to break the group up into its constituent members, make a new
-# list of their UUIDs, then build the group with that list.
+########################################################################
+## We now have a set of lists per object type we will create. Having the
+## lists separated will let us build the group members before the
+## groups. Next, we will connect to the managements and iterate through
+## the objects. For each one, we will see if the object already exists.
+## If it does, we ignore it and move on to the next. If it doesn't, we
+## build it.
+## 
+## Building groups will be more complicated. Right now, I think the best
+## bet is to break the group up into its constituent members, make a new
+## list of their UUIDs, then build the group with that list.
+########################################################################
 
 if [ "${mdsOptCount}" -eq 0 ]; then
 	buildOnSmartCenter
