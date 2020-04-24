@@ -271,14 +271,14 @@ if [ "${inputFile}" != "" ]; then
 		done < "${inputFile}"
 	fi
 
-########################################################################
-## Now that we have the raw data, time to split it up into the different
-## types of objects we will handle later.
-########################################################################
 IFS=$'\n' dedupedObjectList=($(sort <<< "${rawObjectList[*]}" | uniq)); unset IFS
 unset rawObjectList
 debug2 "Deduplicated object list: ${dedupedObjectList[*]}"
 
+########################################################################
+## Now that we have the raw data, time to split it up into the different
+## types of objects we will handle later.
+########################################################################
 debug1 "Splitting objects."
 for item in "${dedupedObjectList[@]}"; do
 	if $(echo "${item}" | egrep ",[a-zA-Z]" > /dev/null); then
@@ -337,7 +337,6 @@ unset rawServiceList
 ## bet is to break the group up into its constituent members, make a new
 ## list of their UUIDs, then build the group with that list.
 ########################################################################
-
 if [ "${mdsOptCount}" -eq 0 ]; then
 	buildOnSmartCenter
 elif [[ "${mdsBuildGlobal}" == true ]]; then
