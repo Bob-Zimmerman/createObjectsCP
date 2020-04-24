@@ -3,12 +3,15 @@
 # • Add support for networks, not just hosts.
 printUsage() {
 	echo "Usage:"
-	echo "$0 [-d] [-h] [-f file] [-I] \"<project>\""
+	echo "$0 [-d] [-h] [-f file] [-I] [-g | -a | -c \"CMA\"] \"<project>\""
 	echo "Default output is pretty-print JSON to STDOUT, suitable for output redirection."
 	echo -e "\t-d\tIncrease debug level, up to twice."
 	echo -e "\t-h\tPrint this usage information."
 	echo -e "\t-f file\tAccept input from <file>."
 	echo -e "\t-I\tAccept input from STDIN."
+	echo -e "\t-g\tOn an MDS, build global objects."
+	echo -e "\t-a\tOn an MDS, build objects on all CMAs, but not globally."
+	echo -e "\t-c CMA\tOn an MDS, build objects on the named CMA."
 	echo -e "\tproject\tQuote-delimited project name, used in any new object names."
 	echo ""
 	echo "Example:"
@@ -47,6 +50,10 @@ if [ $# -eq 0 ]; then
 declare -i debugLevel=0
 inputFile=""
 readFromSTDIN=false
+mdsBuildGlobal=false
+mdsBuildOnAllCMAs=false
+mdsBuildOnCMA=""
+declare -i mdsOptCount=0
 
 rawObjectList=()
 dedupedObjectList=()
@@ -63,7 +70,7 @@ tcpServiceList=()
 udpServiceList=()
 ipServiceList=()
 
-while getopts ":dhf:I" options; do
+while getopts ":dhf:Igac:" options; do
 	case "$options" in
 	d) # Increase debug level.
 		debugLevel+=1
@@ -77,6 +84,18 @@ while getopts ":dhf:I" options; do
 		;;
 	I) # Accept input from STDIN.
 		readFromSTDIN=true
+		;;
+	g)
+		mdsBuildGlobal=true
+		mdsOptCount+=1
+		;;
+	a)
+		mdsBuildOnAllCMAs=true
+		mdsOptCount+=1
+		;;
+	c)
+		mdsBuildOnCMA="${OPTARG}"
+		mdsOptCount+=1
 		;;
 	\?) # Handle invalid options.
 		echo "ERROR: Invalid option: -$OPTARG" >&2
@@ -102,6 +121,15 @@ if [ "${projectName}" == "" ]; then
 	exit 1
 	fi
 debug1 "Project name we are using for new object names: ${projectName}"
+
+if [ "${mdsOptCount}" -gt 1 ]; then
+	echo "ERROR: You may only specify one of -g, -a, or -c." >&2
+	exit 1
+	fi
+
+if [ "${mdsBuildOnCMA}" != "" ]; then
+	debug1 "We will be operating on the CMA named \"${mdsBuildOnCMA}\""
+	fi
 
 if [ $readFromSTDIN ]; then
 	debug1 "Reading from STDIN."
