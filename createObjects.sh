@@ -212,7 +212,7 @@ for item in "${rawServiceList[@]}"; do
 		debug2 "$item looks like a service covering IP protocol ${protocol}."
 		ipServiceList+=("${protocol}")
 	else
-		echo "ERROR: Unhandled service: $item" >&2
+		echo "WARNING: Unhandled service: $item" >&2
 		fi
 	done
 unset rawServiceList
