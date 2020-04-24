@@ -4,7 +4,6 @@ A script for mass creation of simple objects on a Check Point management. This i
 ## NOTE: This is not yet functional.
 ```Usage:
 ./createObjects.sh [-d] [-h] [-f file] [-I] [-g | -a | -c "CMA"] "<project>"
-Default output is pretty-print JSON to STDOUT, suitable for output redirection.
 	-d	Increase debug level, up to twice.
 	-h	Print this usage information.
 	-f file	Accept input from <file>.
