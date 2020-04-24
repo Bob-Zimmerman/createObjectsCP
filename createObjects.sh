@@ -52,6 +52,7 @@ dedupedObjectList=()
 
 serviceGroupList=()
 rawServiceList=()
+fqdnList=()
 networkGroupList=()
 addressRangeList=()
 networkList=()
@@ -129,6 +130,8 @@ for item in "${dedupedObjectList[@]}"; do
 		rawServiceList+=("$item")
 	elif $(echo "${item}" | grep "," > /dev/null); then
 		networkGroupList+=("$item")
+	elif $(echo "${item}" | egrep "^\." > /dev/null); then
+		fqdnList+=("$item")
 	elif $(echo "${item}" | grep "-" > /dev/null); then
 		addressRangeList+=("$item")
 	elif $(echo "${item}" | grep "/" > /dev/null); then
@@ -150,6 +153,7 @@ for item in "${rawServiceList[@]}"; do
 		fi
 	done
 unset rawServiceList
+
 
 # We now have a set of lists per object type we will create. Having the
 # lists separated will let us build the group members before the
