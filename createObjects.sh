@@ -146,15 +146,19 @@ buildOnAllCMAs() {
 	}
 
 buildOnCMA() {
-	debug1 "Entering buildOnCMA for the CMA named \"${mdsBuildOnCMA}\"."
-	echo "ERROR: Building objects on a CMA is not yet implemented." >&2
-	exit 2
+	debug1 "Entering buildOnCMA for the CMA named \"${1}\"."
+	mgmt_cli login -r true domain "$1" > sessionFile.txt
+	createObjects
+	mgmt_cli -s sessionFile.txt logout>/dev/null
+	/bin/rm sessionFile.txt
 	}
 
 buildOnSmartCenter() {
 	debug1 "Entering buildOnSmartCenter."
-	echo "ERROR: Building objects on a SmartCenter is not yet implemented." >&2
-	exit 2
+	mgmt_cli login -r true > sessionFile.txt
+	createObjects
+	mgmt_cli -s sessionFile.txt logout>/dev/null
+	/bin/rm sessionFile.txt
 	}
 
 
