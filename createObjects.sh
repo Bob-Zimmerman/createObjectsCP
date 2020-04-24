@@ -95,13 +95,13 @@ buildServiceGroup() {
 ########################################################################
 createObjects() {
 	debug1 "Entering createObjects."
-	for fqdnContent in "${fqdnList}"; do
-		buildFQDN "${fqdnContents}"
+	for fqdnContent in "${fqdnList[@]}"; do
+		buildFQDN "${fqdnContent}"
 		done
-	for addressRangeContent in "${fqdnList}"; do
+	for addressRangeContent in "${addressRangeList[@]}"; do
 		buildAddressRange "${addressRangeContent}"
 		done
-	for networkContent in "${fqdnList}"; do
+	for networkContent in "${networkList[@]}"; do
 		buildNetwork "${networkContent}"
 		done
 	for hostContent in "${hostList[@]}"; do
