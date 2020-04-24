@@ -41,21 +41,25 @@ debug2() {
 	}
 
 buildGlobalObjects() {
+	debug1 "Entering buildGlobalObjects."
 	echo "ERROR: Building global objects is not yet implemented." >&2
 	exit 2
 	}
 
 buildOnAllCMAs() {
+	debug1 "Entering buildOnAllCMAs."
 	echo "ERROR: Building objects on all CMAs is not yet implemented." >&2
 	exit 2
 	}
 
 buildOnCMA() {
+	debug1 "Entering buildOnCMA for the CMA named \"${mdsBuildOnCMA}\"."
 	echo "ERROR: Building objects on a CMA is not yet implemented." >&2
 	exit 2
 	}
 
 buildOnSmartCenter() {
+	debug1 "Entering buildOnSmartCenter."
 	echo "ERROR: Building objects on a SmartCenter is not yet implemented." >&2
 	exit 2
 	}
@@ -149,10 +153,6 @@ debug1 "Project name we are using for new object names: ${projectName}"
 if [ "${mdsOptCount}" -gt 1 ]; then
 	echo "ERROR: You may only specify one of -g, -a, or -c." >&2
 	exit 1
-	fi
-
-if [ "${mdsBuildOnCMA}" != "" ]; then
-	debug1 "We will be operating on the CMA named \"${mdsBuildOnCMA}\""
 	fi
 
 ########################################################################
