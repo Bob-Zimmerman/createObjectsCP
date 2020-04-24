@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # TODO:
-# • Add support for networks, not just hosts.
 printUsage() {
 	echo "Usage:"
 	echo "$0 [-d] [-h] [-f file] [-I] [-g | -a | -c \"CMA\"] \"<project>\""
@@ -44,7 +43,6 @@ debug2() {
 ## Object build functions. These accept an object's contents, test to
 ## see if a usable object already exists, and if not, creates one.
 ########################################################################
-
 buildFQDN() {
 	debug2 "Entering buildFQDN for $1"
 	echo "WARNING: Building FQDN objects is not yet implemented." >&2
@@ -95,7 +93,6 @@ buildServiceGroup() {
 ## objects, and calls the appropriate object build functions for each
 ## member of each list.
 ########################################################################
-
 createObjects() {
 	debug1 "Entering createObjects."
 	for fqdnContent in "${fqdnList}"; do
@@ -131,7 +128,6 @@ createObjects() {
 ## Management build functions. These should handle all the setup and
 ## teardown.
 ########################################################################
-
 buildGlobalObjects() {
 	debug1 "Entering buildGlobalObjects."
 	echo "ERROR: Building global objects is not yet implemented." >&2
@@ -166,7 +162,6 @@ buildOnSmartCenter() {
 ########################################################################
 ## Execution begins here.
 ########################################################################
-
 if [ $# -eq 0 ]; then
 	printUsage
 	exit 1
@@ -256,7 +251,6 @@ if [ "${mdsOptCount}" -gt 1 ]; then
 ## Done reading and validating command line options. Next, we read the
 ## data, either from STDIN or from the specified file.
 ########################################################################
-
 if [ $readFromSTDIN ]; then
 	debug1 "Reading from STDIN."
 	while read LINE; do
@@ -277,7 +271,6 @@ if [ "${inputFile}" != "" ]; then
 ## Now that we have the raw data, time to split it up into the different
 ## types of objects we will handle later.
 ########################################################################
-
 IFS=$'\n' dedupedObjectList=($(sort <<< "${rawObjectList[*]}" | uniq)); unset IFS
 unset rawObjectList
 debug2 "Deduplicated object list: ${dedupedObjectList[*]}"
