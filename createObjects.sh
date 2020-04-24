@@ -22,6 +22,7 @@ printUsage() {
 	echo "TCP 8080"
 	echo "IP 12"
 	echo "TCP 80,TCP 443"
+	echo ".duckduckgo.com"
 	}
 
 debug1() {
