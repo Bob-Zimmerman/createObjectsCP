@@ -3,7 +3,6 @@
 printUsage() {
 	echo "Usage:"
 	echo "$0 [-d] [-h] [-f file] [-I] [-g | -a | -c \"CMA\"] \"<project>\""
-	echo "Default output is pretty-print JSON to STDOUT, suitable for output redirection."
 	echo -e "\t-d\tIncrease debug level, up to twice."
 	echo -e "\t-h\tPrint this usage information."
 	echo -e "\t-f file\tAccept input from <file>."
