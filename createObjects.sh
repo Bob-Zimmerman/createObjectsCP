@@ -123,6 +123,7 @@ IFS=$'\n' dedupedObjectList=($(sort <<< "${rawObjectList[*]}" | uniq)); unset IF
 unset rawObjectList
 debug2 "Deduplicated object list: ${dedupedObjectList[*]}"
 
+debug1 "Splitting objects."
 for item in "${dedupedObjectList[@]}"; do
 	if $(echo "${item}" | egrep ",[a-zA-Z]" > /dev/null); then
 		debug2 "$item looks like a service group."
@@ -148,6 +149,7 @@ for item in "${dedupedObjectList[@]}"; do
 		fi
 	done
 
+debug1 "Further splitting services."
 for item in "${rawServiceList[@]}"; do
 	if $(echo "${item}" | egrep "^TCP" >/dev/null); then
 		port="$(echo "${item}" | cut -d' ' -f2)"
