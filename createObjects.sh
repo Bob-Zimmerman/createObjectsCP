@@ -53,13 +53,33 @@ buildAddressRange() {
 	}
 
 buildNetwork() {
-	debug2 "Entering buildNetwork for $1"
-	echo "WARNING: Building network objects is not yet implemented." >&2
+	network="$(echo ${1} | cut -d/ -f1)"
+	maskLength="$(echo ${1} | cut -d/ -f2)"
+	debug2 "Entering buildNetwork for ${network}/${maskLength}"
+	existingObjects="$(mgmt_cli -s session.txt --format json show objects filter "172.16.10.0" ip-only true type network \
+		| jq -c '.objects[]|[.subnet4,."mask-length4"]' \
+		| grep "\"${network}\",${maskLength}")"
+	if [ "${existingObjects}" == "" ]; then
+		debug2 "Object not found. Creating."
+		mgmt_cli -s sessionFile.txt add network \
+			name "Net-${network}/${maskLength} for ${projectName}" \
+			subnet "${network}" \
+			mask-length "${maskLength}"
+		fi
 	}
 
 buildHost() {
-	debug2 "Entering buildHost for $1"
-	echo "WARNING: Building host objects is not yet implemented." >&2
+	hostIP="${1}"
+	debug2 "Entering buildHost for ${hostIP}"
+	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects filter "${hostIP}" ip-only true type host \
+		| jq -c '.objects[]|."ipv4-address"' \
+		| grep "${hostIP}")"
+	if [ "${existingObjects}" == "" ]; then
+		debug2 "Object not found. Creating."
+		mgmt_cli -s sessionFile.txt add host \
+			name "Host-${hostIP} for ${projectName}" \
+			ip-address "${hostIP}"
+		fi
 	}
 
 buildNetworkGroup() {
