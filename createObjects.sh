@@ -114,6 +114,9 @@ buildServiceGroup() {
 ########################################################################
 createObjects() {
 	debug1 "Entering createObjects."
+	mgmt_cli -s sessionFile.txt set session \
+		new-name "${projectName} Object Build" \
+		description "Building the objects needed for ${projectName} but which are missing from this management."
 	for fqdnContent in "${fqdnList[@]}"; do
 		buildFQDN "${fqdnContent}"
 		done
@@ -141,6 +144,7 @@ createObjects() {
 	for serviceGroupContent in "${serviceGroupList[@]}"; do
 		buildServiceGroup "${serviceGroupContent}"
 		done
+	mgmt_cli -s sessionFile.txt publish
 	}
 
 ########################################################################
