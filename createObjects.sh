@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# TODO:
 printUsage() {
 	echo "Usage:"
 	echo "$0 [-d] [-h] [-f file] [-I] [-g | -a | -c \"CMA\"] \"<project>\""
