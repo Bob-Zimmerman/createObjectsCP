@@ -43,13 +43,33 @@ debug2() {
 ## see if a usable object already exists, and if not, creates one.
 ########################################################################
 buildFQDN() {
-	debug2 "Entering buildFQDN for $1"
-	echo "WARNING: Building FQDN objects is not yet implemented." >&2
+	domainName="${1}"
+	debug2 "Entering buildFQDN for ${domainName}; UNTESTED"
+	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type dns-domain filter ${domainName} \
+		| jq ".objects[]|.name" \
+		| grep "${domainName}")"
+	if [ "${existingObjects}" == "" ]; then
+		debug2 "Object not found. Creating."
+		mgmt_cli -s sessionFile.txt add dns-domain \
+			name "${domainName}" \
+			comment "Built for ${projectName}"
+		fi
 	}
 
 buildAddressRange() {
-	debug2 "Entering buildAddressRange for $1"
-	echo "WARNING: Building address range objects is not yet implemented." >&2
+	lowEnd="$(echo ${1} | cut -d- -f1)"
+	highEnd="$(echo ${1} | cut -d- -f2)"
+	debug2 "Entering buildAddressRange for ${lowEnd} to ${highEnd}; UNTESTED"
+	echo "WARNING: Checking existing address range objects can fail if you have more than 500." >&2
+	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type address-range filter ${lowEnd} limit 500 \
+		| jq -c '.objects[]|[."ipv4-address-first",."ipv4-address-last"]' \
+		| grep "\"${lowEnd}\",\"${highEnd}\"")"
+	if [ "${existingObjects}" == "" ]; then
+		debug2 "Object not found. Creating."
+		mgmt_cli -s sessionFile.txt add dns-domain \
+			name "${domainName}" \
+			comment "Built for ${projectName}"
+		fi
 	}
 
 buildNetwork() {
