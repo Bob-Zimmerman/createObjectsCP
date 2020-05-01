@@ -109,11 +109,6 @@ buildHost() {
 		fi
 	}
 
-buildNetworkGroup() {
-	debug2 "Entering buildNetworkGroup for contents $1"
-	echo "WARNING: Building network groups is not yet implemented." >&2
-	}
-
 buildTCPService() {
 	ports="${1}"
 	debug2 "Entering buildTCPService for port(s) ${ports}"
@@ -162,6 +157,11 @@ buildIPService() {
 		fi
 	}
 
+buildNetworkGroup() {
+	debug2 "Entering buildNetworkGroup for contents $1"
+	echo "WARNING: Building network groups is not yet implemented." >&2
+	}
+
 buildServiceGroup() {
 	debug2 "Entering buildServiceGroup for contents $1"
 	echo "WARNING: Building service groups is not yet implemented." >&2
@@ -189,9 +189,6 @@ createObjects() {
 	for hostContent in "${hostList[@]}"; do
 		buildHost "${hostContent}"
 		done
-	for networkGroupContent in "${networkGroupList[@]}"; do
-		buildNetworkGroup "${networkGroupContent}"
-		done
 	for tcpServiceContent in "${tcpServiceList[@]}"; do
 		buildTCPService "${tcpServiceContent}"
 		done
@@ -200,6 +197,9 @@ createObjects() {
 		done
 	for ipServiceContent in "${ipServiceList[@]}"; do
 		buildIPService "${ipServiceContent}"
+		done
+	for networkGroupContent in "${networkGroupList[@]}"; do
+		buildNetworkGroup "${networkGroupContent}"
 		done
 	for serviceGroupContent in "${serviceGroupList[@]}"; do
 		buildServiceGroup "${serviceGroupContent}"
