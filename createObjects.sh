@@ -115,18 +115,51 @@ buildNetworkGroup() {
 	}
 
 buildTCPService() {
-	debug2 "Entering buildTCPService for port(s) $1"
-	echo "WARNING: Building TCP service objects is not yet implemented." >&2
+	ports="${1}"
+	debug2 "Entering buildTCPService for port(s) ${ports}"
+	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type service-tcp filter "${ports}" \
+		| jq -c '.objects[]|.port')"
+	if [ "${#existingObjects[@]}" == "500" ]; then
+		echo "WARNING: It looks like you already have over 500 matching TCP services. Duplicate checking may fail." >&2
+		fi
+	if [ "$(${existingObjects} | grep "\"${ports}\"")" == "" ]; then
+		debug2 "Object not found. Creating."
+		mgmt_cli -s sessionFile.txt add service-tcp \
+			name "TCP-${ports} for ${projectName}" \
+			port "${ports}"
+		fi
 	}
 
 buildUDPService() {
-	debug2 "Entering buildUDPService for port(s) $1"
-	echo "WARNING: Building UDP service objects is not yet implemented." >&2
+	ports="${1}"
+	debug2 "Entering buildUDPService for port(s) ${ports}"
+	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type service-udp filter "${ports}" \
+		| jq -c '.objects[]|.port')"
+	if [ "${#existingObjects[@]}" == "500" ]; then
+		echo "WARNING: It looks like you already have over 500 matching UDP services. Duplicate checking may fail." >&2
+		fi
+	if [ "$(${existingObjects} | grep "\"${ports}\"")" == "" ]; then
+		debug2 "Object not found. Creating."
+		mgmt_cli -s sessionFile.txt add service-udp \
+			name "UDP-${ports} for ${projectName}" \
+			port "${ports}"
+		fi
 	}
 
 buildIPService() {
-	debug2 "Entering buildIPService for protocol $1"
-	echo "WARNING: Building IP protocol objects is not yet implemented." >&2
+	protocol="${1}"
+	debug2 "Entering buildIPService for protocol ${protocol}"
+	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type service-other filter "${protocol}" \
+		| jq -c '.objects[]|[.name,."ip-protocol"]')"
+	if [ "${#existingObjects[@]}" == "500" ]; then
+		echo "WARNING: It looks like you already have over 500 matching IP protocol objects. Duplicate checking may fail." >&2
+		fi
+	if [ "$(${existingObjects} | grep "\"${protocol}\"")" == "" ]; then
+		debug2 "Object not found. Creating."
+		mgmt_cli -s sessionFile.txt add service-other \
+			name "Proto-${protocol} for ${projectName}" \
+			ip-protocol "${protocol}"
+		fi
 	}
 
 buildServiceGroup() {
