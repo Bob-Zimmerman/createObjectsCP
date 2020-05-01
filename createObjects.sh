@@ -46,9 +46,11 @@ buildFQDN() {
 	domainName="${1}"
 	debug2 "Entering buildFQDN for ${domainName}; UNTESTED"
 	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type dns-domain filter ${domainName} \
-		| jq ".objects[]|.name" \
-		| grep "${domainName}")"
-	if [ "${existingObjects}" == "" ]; then
+		| jq ".objects[]|.name")"
+	if [ "${#existingObjects[@]}" == "500" ]; then
+		echo "WARNING: It looks like you already have over 500 matching FQDN objects. Duplicate checking may fail." >&2
+		fi
+	if [ "$(echo ${existingObjects} | grep "\"${domainName}\"")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add dns-domain \
 			name "${domainName}" \
@@ -60,11 +62,12 @@ buildAddressRange() {
 	lowEnd="$(echo ${1} | cut -d- -f1)"
 	highEnd="$(echo ${1} | cut -d- -f2)"
 	debug2 "Entering buildAddressRange for ${lowEnd} to ${highEnd}; UNTESTED"
-	echo "WARNING: Checking existing address range objects can fail if you have more than 500." >&2
 	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type address-range filter ${lowEnd} limit 500 \
-		| jq -c '.objects[]|[."ipv4-address-first",."ipv4-address-last"]' \
-		| grep "\"${lowEnd}\",\"${highEnd}\"")"
-	if [ "${existingObjects}" == "" ]; then
+		| jq -c '.objects[]|[."ipv4-address-first",."ipv4-address-last"]')"
+	if [ "${#existingObjects[@]}" == "500" ]; then
+		echo "WARNING: It looks like you already have over 500 matching address range objects. Duplicate checking may fail." >&2
+		fi
+	if [ "$(echo ${existingObjects} | grep "\"${lowEnd}\",\"${highEnd}\"")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add dns-domain \
 			name "${domainName}" \
@@ -77,9 +80,11 @@ buildNetwork() {
 	maskLength="$(echo ${1} | cut -d/ -f2)"
 	debug2 "Entering buildNetwork for ${network}/${maskLength}"
 	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type network filter "${network}" ip-only true \
-		| jq -c '.objects[]|[.subnet4,."mask-length4"]' \
-		| grep "\"${network}\",${maskLength}")"
-	if [ "${existingObjects}" == "" ]; then
+		| jq -c '.objects[]|[.subnet4,."mask-length4"]')"
+	if [ "${#existingObjects[@]}" == "500" ]; then
+		echo "WARNING: It looks like you already have over 500 matching networks. Duplicate checking may fail." >&2
+		fi
+	if [ "$(echo ${existingObjects} | grep "\"${network}\",${maskLength}")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add network \
 			name "Net-${network}/${maskLength} for ${projectName}" \
@@ -92,9 +97,11 @@ buildHost() {
 	hostIP="${1}"
 	debug2 "Entering buildHost for ${hostIP}"
 	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type host filter "${hostIP}" ip-only true \
-		| jq -c '.objects[]|."ipv4-address"' \
-		| grep "${hostIP}")"
-	if [ "${existingObjects}" == "" ]; then
+		| jq -c '.objects[]|."ipv4-address"')"
+	if [ "${#existingObjects[@]}" == "500" ]; then
+		echo "WARNING: It looks like you already have over 500 matching hosts. Duplicate checking may fail." >&2
+		fi
+	if [ "$(${existingObjects} | grep "${hostIP}")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add host \
 			name "Host-${hostIP} for ${projectName}" \
