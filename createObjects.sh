@@ -76,7 +76,7 @@ buildNetwork() {
 	network="$(echo ${1} | cut -d/ -f1)"
 	maskLength="$(echo ${1} | cut -d/ -f2)"
 	debug2 "Entering buildNetwork for ${network}/${maskLength}"
-	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects filter "${network}" ip-only true type network \
+	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type network filter "${network}" ip-only true \
 		| jq -c '.objects[]|[.subnet4,."mask-length4"]' \
 		| grep "\"${network}\",${maskLength}")"
 	if [ "${existingObjects}" == "" ]; then
@@ -91,7 +91,7 @@ buildNetwork() {
 buildHost() {
 	hostIP="${1}"
 	debug2 "Entering buildHost for ${hostIP}"
-	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects filter "${hostIP}" ip-only true type host \
+	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type host filter "${hostIP}" ip-only true \
 		| jq -c '.objects[]|."ipv4-address"' \
 		| grep "${hostIP}")"
 	if [ "${existingObjects}" == "" ]; then
