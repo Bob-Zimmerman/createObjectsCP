@@ -150,7 +150,7 @@ buildIPService() {
 	if [ "${#existingObjects[@]}" == "500" ]; then
 		echo "WARNING: It looks like you already have over 500 matching IP protocol objects. Duplicate checking may fail." >&2
 		fi
-	if [ "$(echo ${existingObjects} | grep "\"${protocol}\"")" == "" ]; then
+	if [ "$(echo ${existingObjects} | grep ",${protocol}]")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add service-other \
 			name "Proto-${protocol}" \
