@@ -44,7 +44,7 @@ debug2() {
 ########################################################################
 buildFQDN() {
 	domainName="${1}"
-	debug2 "Entering buildFQDN for ${domainName}; UNTESTED"
+	debug2 "Entering buildFQDN for ${domainName}"
 	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type dns-domain filter ${domainName} \
 		| jq ".objects[]|.name")"
 	if [ "${#existingObjects[@]}" == "500" ]; then
@@ -61,7 +61,7 @@ buildFQDN() {
 buildAddressRange() {
 	lowEnd="$(echo ${1} | cut -d- -f1)"
 	highEnd="$(echo ${1} | cut -d- -f2)"
-	debug2 "Entering buildAddressRange for ${lowEnd} to ${highEnd}; UNTESTED"
+	debug2 "Entering buildAddressRange for ${lowEnd} to ${highEnd}"
 	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type address-range filter ${lowEnd} limit 500 \
 		| jq -c '.objects[]|[."ipv4-address-first",."ipv4-address-last"]')"
 	if [ "${#existingObjects[@]}" == "500" ]; then
@@ -69,9 +69,10 @@ buildAddressRange() {
 		fi
 	if [ "$(echo ${existingObjects} | grep "\"${lowEnd}\",\"${highEnd}\"")" == "" ]; then
 		debug2 "Object not found. Creating."
-		mgmt_cli -s sessionFile.txt add dns-domain \
-			name "${domainName}" \
-			comment "Built for ${projectName}"
+		mgmt_cli -s sessionFile.txt add address-range \
+			name "Range-${lowEnd}-${highEnd} for ${projectName}" \
+			ip-address-first "${lowEnd}" \
+			ip-address-last "${highEnd}"
 		fi
 	}
 
