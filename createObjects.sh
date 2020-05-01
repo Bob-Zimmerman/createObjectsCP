@@ -53,7 +53,8 @@ buildFQDN() {
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add dns-domain \
 			name "${domainName}" \
-			comment "Built for ${projectName}"
+			is-sub-domain false \
+			comments "Built for ${projectName}"
 		fi
 	}
 
@@ -101,7 +102,7 @@ buildHost() {
 	if [ "${#existingObjects[@]}" == "500" ]; then
 		echo "WARNING: It looks like you already have over 500 matching hosts. Duplicate checking may fail." >&2
 		fi
-	if [ "$(${existingObjects} | grep "${hostIP}")" == "" ]; then
+	if [ "$(echo ${existingObjects} | grep "${hostIP}")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add host \
 			name "Host-${hostIP} for ${projectName}" \
@@ -117,7 +118,7 @@ buildTCPService() {
 	if [ "${#existingObjects[@]}" == "500" ]; then
 		echo "WARNING: It looks like you already have over 500 matching TCP services. Duplicate checking may fail." >&2
 		fi
-	if [ "$(${existingObjects} | grep "\"${ports}\"")" == "" ]; then
+	if [ "$(echo ${existingObjects} | grep "\"${ports}\"")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add service-tcp \
 			name "TCP-${ports} for ${projectName}" \
@@ -133,7 +134,7 @@ buildUDPService() {
 	if [ "${#existingObjects[@]}" == "500" ]; then
 		echo "WARNING: It looks like you already have over 500 matching UDP services. Duplicate checking may fail." >&2
 		fi
-	if [ "$(${existingObjects} | grep "\"${ports}\"")" == "" ]; then
+	if [ "$(echo ${existingObjects} | grep "\"${ports}\"")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add service-udp \
 			name "UDP-${ports} for ${projectName}" \
@@ -144,16 +145,17 @@ buildUDPService() {
 buildIPService() {
 	protocol="${1}"
 	debug2 "Entering buildIPService for protocol ${protocol}"
-	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type service-other filter "${protocol}" \
+	existingObjects="$(mgmt_cli -s sessionFile.txt --format json show objects type service-other filter "${protocol}" details-level full \
 		| jq -c '.objects[]|[.name,."ip-protocol"]')"
 	if [ "${#existingObjects[@]}" == "500" ]; then
 		echo "WARNING: It looks like you already have over 500 matching IP protocol objects. Duplicate checking may fail." >&2
 		fi
-	if [ "$(${existingObjects} | grep "\"${protocol}\"")" == "" ]; then
+	if [ "$(echo ${existingObjects} | grep "\"${protocol}\"")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add service-other \
-			name "Proto-${protocol} for ${projectName}" \
-			ip-protocol "${protocol}"
+			name "Proto-${protocol}" \
+			ip-protocol "${protocol}" \
+			comments "Built for ${projectName}"
 		fi
 	}
 
