@@ -121,8 +121,9 @@ buildTCPService() {
 	if [ "$(echo ${existingObjects} | grep "\"${ports}\"")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add service-tcp \
-			name "TCP-${ports} for ${projectName}" \
-			port "${ports}"
+			name "TCP-${ports}" \
+			port "${ports}" \
+			comments "Built for ${projectName}"
 		fi
 	}
 
@@ -137,8 +138,9 @@ buildUDPService() {
 	if [ "$(echo ${existingObjects} | grep "\"${ports}\"")" == "" ]; then
 		debug2 "Object not found. Creating."
 		mgmt_cli -s sessionFile.txt add service-udp \
-			name "UDP-${ports} for ${projectName}" \
-			port "${ports}"
+			name "UDP-${ports}" \
+			port "${ports}" \
+			comments "Built for ${projectName}"
 		fi
 	}
 
@@ -340,7 +342,7 @@ if [ "${mdsOptCount}" -gt 1 ]; then
 ## Done reading and validating command line options. Next, we read the
 ## data, either from STDIN or from the specified file.
 ########################################################################
-if [ $readFromSTDIN ]; then
+if [ "${readFromSTDIN}" -eq true ]; then
 	debug1 "Reading from STDIN."
 	while read LINE; do
 		debug2 "New item: ${LINE}"
